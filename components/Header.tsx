@@ -97,18 +97,24 @@ export default function Header() {
             Book a shoot <span className="arr" aria-hidden="true">→</span>
           </a>
         </div>
-        <button
-          ref={burger}
-          className="burger"
-          aria-label={open ? 'Close menu' : 'Open menu'}
-          aria-expanded={open}
-          aria-controls="menu"
-          onClick={() => setOpen((o) => !o)}
-        >
-          <i />
-          <i />
-          <i />
-        </button>
+        <div className="hdr-actions">
+          <a className="hdr-quick-book btn gold" href="#contact" onClick={close}>
+            <span>Book</span>
+            <span className="arr" aria-hidden="true">→</span>
+          </a>
+          <button
+            ref={burger}
+            className="burger"
+            aria-label={open ? 'Close menu' : 'Open menu'}
+            aria-expanded={open}
+            aria-controls="menu"
+            onClick={() => setOpen((o) => !o)}
+          >
+            <i />
+            <i />
+            <i />
+          </button>
+        </div>
       </header>
     </>
   );

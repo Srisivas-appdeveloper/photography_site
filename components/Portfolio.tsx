@@ -95,6 +95,21 @@ export default function Portfolio() {
     return pairs;
   }, [visible]);
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)');
+    const onChange = () => {
+      setIsMobile(mq.matches);
+      if (mq.matches) {
+        setViewMode('grid');
+      }
+    };
+    onChange();
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
   // Reset spread when category filter changes
   useEffect(() => {
     setBookSpread(0);
@@ -177,30 +192,32 @@ export default function Portfolio() {
 
         {/* View Mode Switcher + Category Filters */}
         <div className="port-controls">
-          <div className="view-toggle glass" role="group" aria-label="View mode">
-            <button
-              className={`toggle-btn ${viewMode === 'grid' ? 'active' : ''}`}
-              onClick={() => setViewMode('grid')}
-              aria-pressed={viewMode === 'grid'}
-              aria-label="Grid Masonry View"
-            >
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-                <path d="M3 3h7v7H3zm11 0h7v7h-7zM3 14h7v7H3zm11 0h7v7h-7z" />
-              </svg>
-              <span>Masonry</span>
-            </button>
-            <button
-              className={`toggle-btn ${viewMode === 'book' ? 'active' : ''}`}
-              onClick={() => setViewMode('book')}
-              aria-pressed={viewMode === 'book'}
-              aria-label="Lookbook Album View"
-            >
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-                <path d="M21 4H3a2 2 0 00-2 2v13a2 2 0 002 2h18a2 2 0 002-2V6a2 2 0 00-2-2zM3 19V6h8v13H3zm18 0h-8V6h8v13z" />
-              </svg>
-              <span>Lookbook 📖</span>
-            </button>
-          </div>
+          {!isMobile && (
+            <div className="view-toggle glass" role="group" aria-label="View mode">
+              <button
+                className={`toggle-btn ${viewMode === 'grid' ? 'active' : ''}`}
+                onClick={() => setViewMode('grid')}
+                aria-pressed={viewMode === 'grid'}
+                aria-label="Grid Masonry View"
+              >
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                  <path d="M3 3h7v7H3zm11 0h7v7h-7zM3 14h7v7H3zm11 0h7v7h-7z" />
+                </svg>
+                <span>Masonry</span>
+              </button>
+              <button
+                className={`toggle-btn ${viewMode === 'book' ? 'active' : ''}`}
+                onClick={() => setViewMode('book')}
+                aria-pressed={viewMode === 'book'}
+                aria-label="Lookbook Album View"
+              >
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                  <path d="M21 4H3a2 2 0 00-2 2v13a2 2 0 002 2h18a2 2 0 002-2V6a2 2 0 00-2-2zM3 19V6h8v13H3zm18 0h-8V6h8v13z" />
+                </svg>
+                <span>Lookbook 📖</span>
+              </button>
+            </div>
+          )}
 
           <div className="filters glass" role="group" aria-label="Filter portfolio">
             {filters.map((f) => (
@@ -251,8 +268,8 @@ export default function Portfolio() {
         </div>
       )}
 
-      {/* ================= VIEW 2: 3D EDITORIAL LOOKBOOK ALBUM ================= */}
-      {viewMode === 'book' && (
+      {/* ================= VIEW 2: 3D EDITORIAL LOOKBOOK ALBUM (TABLET & DESKTOP ONLY) ================= */}
+      {!isMobile && viewMode === 'book' && (
         <div className="lookbook-stage rv" data-category={filter}>
           {/* Ambient Lighting Glow Background */}
           <div className="lookbook-ambient" />
@@ -372,14 +389,22 @@ export default function Portfolio() {
             <div className="spread-indicator">
               <span>SPREAD {bookSpread + 1} OF {spreads.length}</span>
               <div className="spread-dots">
-                {spreads.map((_, idx) => (
-                  <button
-                    key={idx}
-                    className={`spread-dot ${idx === bookSpread ? 'active' : ''}`}
-                    onClick={() => goToSpread(idx)}
-                    aria-label={`Jump to spread ${idx + 1}`}
-                  />
-                ))}
+                {spreads.map((_, idx) => {
+                  const isVisible =
+                    spreads.length <= 9 ||
+                    Math.abs(idx - bookSpread) <= 2 ||
+                    idx === 0 ||
+                    idx === spreads.length - 1;
+                  if (!isVisible) return null;
+                  return (
+                    <button
+                      key={idx}
+                      className={`spread-dot ${idx === bookSpread ? 'active' : ''}`}
+                      onClick={() => goToSpread(idx)}
+                      aria-label={`Jump to spread ${idx + 1}`}
+                    />
+                  );
+                })}
               </div>
             </div>
 
