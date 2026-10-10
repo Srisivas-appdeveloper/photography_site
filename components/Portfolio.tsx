@@ -297,18 +297,22 @@ export default function Portfolio() {
         <>
           {isMobile && (
             <div className="mobile-gallery-toolbar">
-              <span className="photo-count-pill">
-                Showing {displayedPhotos.length} of {visible.length} stories
-              </span>
-              <div className="density-toggle glass" role="group" aria-label="Grid layout">
+              <div className="photo-count-pill">
+                <span className="count-dot" />
+                <span className="count-text">
+                  <strong>{displayedPhotos.length}</strong> of <strong>{visible.length}</strong> stories
+                </span>
+              </div>
+              <div className="density-toggle" role="group" aria-label="Grid layout">
                 <button
                   type="button"
                   className={`density-btn ${density === 'compact' ? 'active' : ''}`}
                   onClick={() => setDensity('compact')}
                   aria-pressed={density === 'compact'}
+                  aria-label="2-Column grid view"
                 >
-                  <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
-                    <path d="M4 4h7v7H4zm9 0h7v7h-7zm-9 9h7v7H4zm9 0h7v7h-7z" />
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor">
+                    <path d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 0h8v8h-8z" />
                   </svg>
                   <span>2-Col</span>
                 </button>
@@ -317,9 +321,10 @@ export default function Portfolio() {
                   className={`density-btn ${density === 'large' ? 'active' : ''}`}
                   onClick={() => setDensity('large')}
                   aria-pressed={density === 'large'}
+                  aria-label="Large single column view"
                 >
-                  <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
-                    <path d="M4 5h16v14H4z" />
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor">
+                    <path d="M3 4h18v16H3z" />
                   </svg>
                   <span>Large</span>
                 </button>
