@@ -575,22 +575,98 @@ body.ready .fadeup { opacity: 1; transform: none; }
 @media (max-width: 600px) { .stat span { font-size: 0.58rem; letter-spacing: 0.16em; } .stat b.t { font-size: 1.3rem; } }
 
 /* ================= PORTFOLIO ================= */
-.sh { display: flex; justify-content: space-between; align-items: flex-end; gap: 2rem; flex-wrap: wrap; margin-bottom: 2.6rem; }
+/* ================= PORTFOLIO ================= */
+.sh {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.6rem;
+  width: 100%;
+}
 .sh h2 { margin-top: 0.8rem; }
-.port-controls { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
-.view-toggle { display: flex; gap: 0.2rem; padding: 0.3rem; border-radius: 999px; }
+.port-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  max-width: 100%;
+  min-width: 0; /* CRITICAL: Enables flex child shrinking so overflow-x triggers properly! */
+}
+.view-toggle { display: flex; gap: 0.2rem; padding: 0.3rem; border-radius: 999px; flex-shrink: 0; }
 .toggle-btn {
   display: flex; align-items: center; gap: 0.4rem; border: 0; background: none; padding: 0.55rem 0.95rem; border-radius: 999px; cursor: pointer;
   font: 600 0.65rem var(--sans); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); transition: all 0.3s var(--ease);
+  flex-shrink: 0;
 }
 .toggle-btn:hover { background: rgba(255, 255, 255, 0.6); }
 .toggle-btn.active { background: var(--ink); color: var(--pearl); box-shadow: 0 4px 12px rgba(44, 39, 51, 0.15); }
 
-.filters { display: flex; gap: 0.25rem; padding: 0.35rem; border-radius: 999px; }
-.filters button { position: relative; border: 0; background: none; padding: 0.65rem 1.05rem; min-height: 42px; border-radius: 999px; cursor: pointer;
-  font: 600 0.64rem var(--sans); letter-spacing: 0.17em; text-transform: uppercase; color: var(--ink-2); transition: background 0.4s, color 0.4s; }
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  max-width: 100%;
+  min-width: 0; /* CRITICAL: Enables flex container shrinking so overflow-x works! */
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
+  scrollbar-width: none;
+  cursor: grab;
+  user-select: none;
+}
+.filters:active {
+  cursor: grabbing;
+}
+.filters::-webkit-scrollbar {
+  display: none;
+}
+.filters button {
+  position: relative;
+  border: 0;
+  background: none;
+  padding: 0.55rem 1rem;
+  min-height: 40px;
+  border-radius: 999px;
+  cursor: pointer;
+  font: 600 0.64rem var(--sans);
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  transition: background 0.4s, color 0.4s;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
 .filters button:hover { background: rgba(255, 255, 255, 0.6); }
 .filters button[aria-pressed='true'] { background: var(--ink); color: var(--pearl); }
+
+/* Spacer at end of scroll track so last item (Baby Shower) is never clipped under the pill curve */
+.filters::after {
+  content: '';
+  display: block;
+  flex: 0 0 1rem;
+  width: 1rem;
+  height: 1px;
+}
+
+@media (max-width: 1024px) {
+  .sh {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.2rem;
+  }
+  .port-controls {
+    width: 100%;
+  }
+  .filters {
+    width: 100%;
+  }
+}
 
 /* Multi-column Masonry (No face cropping, natural aspect ratio) */
 .grid {

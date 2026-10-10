@@ -80,6 +80,45 @@ export default function Portfolio() {
   const dlg = useRef<HTMLDialogElement>(null);
   const lastTile = useRef<HTMLButtonElement | null>(null);
   const touchX = useRef<number | null>(null);
+  const filtersRef = useRef<HTMLDivElement>(null);
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const scrollLeftStart = useRef(0);
+
+  const handleFilterClick = (id: 'all' | Category, e: React.MouseEvent<HTMLButtonElement>) => {
+    setFilter(id);
+    e.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  };
+
+  const handleFilterMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = filtersRef.current;
+    if (!el) return;
+    isDragging.current = true;
+    startX.current = e.pageX - el.offsetLeft;
+    scrollLeftStart.current = el.scrollLeft;
+  };
+
+  const handleFilterMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDragging.current) return;
+    const el = filtersRef.current;
+    if (!el) return;
+    e.preventDefault();
+    const x = e.pageX - el.offsetLeft;
+    const walk = (x - startX.current) * 1.5;
+    el.scrollLeft = scrollLeftStart.current - walk;
+  };
+
+  const handleFilterMouseUp = () => {
+    isDragging.current = false;
+  };
+
+  const handleFilterWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    const el = filtersRef.current;
+    if (!el) return;
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      el.scrollLeft += e.deltaY;
+    }
+  };
 
   const visible = useMemo(
     () => (filter === 'all' ? portfolio : portfolio.filter((p) => p.category === filter)),
@@ -96,6 +135,8 @@ export default function Portfolio() {
   }, [visible]);
 
   const [isMobile, setIsMobile] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [density, setDensity] = useState<'compact' | 'large'>('compact');
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 767px)');
@@ -110,10 +151,11 @@ export default function Portfolio() {
     return () => mq.removeEventListener('change', onChange);
   }, []);
 
-  // Reset spread when category filter changes
+  // Reset spread and mobile expand when category filter changes
   useEffect(() => {
     setBookSpread(0);
     setTurnState(null);
+    setExpanded(false);
   }, [filter]);
 
   const goToSpread = (targetIdx: number) => {
@@ -182,6 +224,13 @@ export default function Portfolio() {
   const currentSpread = spreads[bookSpread] || [visible[0], null];
   const storyInfo = categoryStories[filter];
 
+  const displayedPhotos = useMemo(() => {
+    if (isMobile && !expanded) {
+      return visible.slice(0, 6);
+    }
+    return visible;
+  }, [isMobile, expanded, visible]);
+
   return (
     <section id="portfolio" className="portfolio-sec">
       <div className="sh">
@@ -219,9 +268,23 @@ export default function Portfolio() {
             </div>
           )}
 
-          <div className="filters glass" role="group" aria-label="Filter portfolio">
+          <div
+            ref={filtersRef}
+            className="filters glass"
+            role="group"
+            aria-label="Filter portfolio"
+            onMouseDown={handleFilterMouseDown}
+            onMouseMove={handleFilterMouseMove}
+            onMouseUp={handleFilterMouseUp}
+            onMouseLeave={handleFilterMouseUp}
+            onWheel={handleFilterWheel}
+          >
             {filters.map((f) => (
-              <button key={f.id} aria-pressed={filter === f.id} onClick={() => setFilter(f.id)}>
+              <button
+                key={f.id}
+                aria-pressed={filter === f.id}
+                onClick={(e) => handleFilterClick(f.id, e)}
+              >
                 {f.label}
               </button>
             ))}
@@ -231,41 +294,91 @@ export default function Portfolio() {
 
       {/* ================= VIEW 1: MASONRY GRID ================= */}
       {viewMode === 'grid' && (
-        <div className="grid">
-          {visible.map((p, i) => (
-            <button
-              key={`${filter}-${p.src}`}
-              className="tile"
-              data-cursor="VIEW"
-              aria-haspopup="dialog"
-              aria-label={`Open ${p.title}`}
-              onClick={(e) => open(i, e.currentTarget)}
-              style={{
-                animationDelay: `${i * 35}ms`,
-                aspectRatio: `${p.w} / ${p.h}`,
-              }}
-            >
-              <Image
-                src={p.src}
-                alt={p.alt}
-                fill
-                loading="lazy"
-                unoptimized
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                placeholder="blur"
-                blurDataURL={blurFor(p.src, tintOf[p.category])}
-                style={{ objectFit: 'cover', objectPosition: 'center 15%' }}
-              />
-              <span className="cap glass-dark">
-                <span>
-                  <small>{p.category.toUpperCase()}</small>
-                  <h3>{p.title}</h3>
-                </span>
-                <span className="ring" aria-hidden="true">↗</span>
+        <>
+          {isMobile && (
+            <div className="mobile-gallery-toolbar">
+              <span className="photo-count-pill">
+                Showing {displayedPhotos.length} of {visible.length} stories
               </span>
-            </button>
-          ))}
-        </div>
+              <div className="density-toggle glass" role="group" aria-label="Grid layout">
+                <button
+                  type="button"
+                  className={`density-btn ${density === 'compact' ? 'active' : ''}`}
+                  onClick={() => setDensity('compact')}
+                  aria-pressed={density === 'compact'}
+                >
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                    <path d="M4 4h7v7H4zm9 0h7v7h-7zm-9 9h7v7H4zm9 0h7v7h-7z" />
+                  </svg>
+                  <span>2-Col</span>
+                </button>
+                <button
+                  type="button"
+                  className={`density-btn ${density === 'large' ? 'active' : ''}`}
+                  onClick={() => setDensity('large')}
+                  aria-pressed={density === 'large'}
+                >
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                    <path d="M4 5h16v14H4z" />
+                  </svg>
+                  <span>Large</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div className={`grid ${isMobile ? `mobile-${density}` : ''}`}>
+            {displayedPhotos.map((p, i) => (
+              <button
+                key={`${filter}-${p.src}`}
+                className="tile"
+                data-cursor="VIEW"
+                aria-haspopup="dialog"
+                aria-label={`Open ${p.title}`}
+                onClick={(e) => open(i, e.currentTarget)}
+                style={{
+                  animationDelay: `${i * 35}ms`,
+                  aspectRatio: `${p.w} / ${p.h}`,
+                }}
+              >
+                <Image
+                  src={p.src}
+                  alt={p.alt}
+                  fill
+                  loading="lazy"
+                  unoptimized
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  placeholder="blur"
+                  blurDataURL={blurFor(p.src, tintOf[p.category])}
+                  style={{ objectFit: 'cover', objectPosition: 'center 15%' }}
+                />
+                <span className="cap glass-dark">
+                  <span>
+                    <small>{p.category.toUpperCase()}</small>
+                    <h3>{p.title}</h3>
+                  </span>
+                  <span className="ring" aria-hidden="true">↗</span>
+                </span>
+              </button>
+            ))}
+          </div>
+
+          {isMobile && visible.length > 6 && (
+            <div className="mobile-expand-wrap">
+              <button
+                type="button"
+                className="btn gold mobile-expand-btn"
+                onClick={() => setExpanded((prev) => !prev)}
+              >
+                {expanded ? (
+                  <>Show Curated (6) ↑</>
+                ) : (
+                  <>View All {visible.length} Stories ({visible.length - 6} more) ↓</>
+                )}
+              </button>
+            </div>
+          )}
+        </>
       )}
 
       {/* ================= VIEW 2: 3D EDITORIAL LOOKBOOK ALBUM (TABLET & DESKTOP ONLY) ================= */}
