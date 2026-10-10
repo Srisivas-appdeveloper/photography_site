@@ -1,0 +1,14 @@
+node_modules
+.next
+out
+.env*.local
+*.tsbuildinfo
+next-env.d.ts
+.DS_Store
+._*
+public/images/raw/*
+!public/images/raw/.gitkeep
+
+# Raw large video sources (exceeds GitHub 100MB limit)
+public/fashion_reels/*.mp4
+public/fashion_reels/*.mov
