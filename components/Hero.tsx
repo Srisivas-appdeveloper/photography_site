@@ -6,26 +6,26 @@ import { blurFor } from '@/lib/blur';
 
 const heroSlides = [
   {
-    src: '/images/optimized/bridal-pink-gold-palm-leaves.jpg',
-    alt: 'South Indian bride glowing in silk saree and gold temple jewelry',
+    src: '/images/optimized/lehenga-champagne-sequin-doorway.jpg',
+    alt: 'Bride in handcrafted champagne sequin lehenga with heirloom jewelry',
     tag: 'Bridal & Weddings',
-    objectPosition: 'center 12%',
-  },
-  {
-    src: '/images/optimized/celebrity-balcony-golden-gown.jpg',
-    alt: 'Celebrity portrait on set in golden gown under warm golden hour light',
-    tag: 'Celebrities & Stills',
     objectPosition: 'center 20%',
   },
   {
-    src: '/images/optimized/western-chartreuse-sculptural-gown.jpg',
-    alt: 'High fashion sculptural chartreuse gown photoshoot',
-    tag: 'Fashion & Western',
-    objectPosition: 'center 15%',
+    src: '/images/optimized/celebrity-curly-hair-portrait.jpg',
+    alt: 'Celebrity portrait in warm cinematic ambient light',
+    tag: 'Celebrities & Stills',
+    objectPosition: 'center 22%',
   },
   {
-    src: '/images/optimized/television-sound-party-host.jpg',
-    alt: 'Vijay Television Sound Party production stills on set',
+    src: '/images/optimized/western-chartreuse-sculptural-gown.jpg',
+    alt: 'High fashion editorial in sculptural chartreuse gown',
+    tag: 'Fashion & Western',
+    objectPosition: 'center 18%',
+  },
+  {
+    src: '/images/optimized/television-sound-party-black-dress.jpg',
+    alt: 'Television celebrity portrait on studio set',
     tag: 'Television & Media',
     objectPosition: 'center 18%',
   },
@@ -71,7 +71,7 @@ export default function Hero() {
 
         {/* Hero Content */}
         <div className="hero-in">
-          <div>
+          <div className="hero-brand">
             <p className="eyebrow fadeup" style={{ ['--d' as string]: '.05s' }}>Photography &amp; Creative Studio</p>
             <h1>
               <span className="line"><span style={{ ['--d' as string]: '.1s' }}>LEO</span></span>
@@ -85,10 +85,10 @@ export default function Hero() {
               <span>STORIES · STYLE · EMOTION</span>
               <span>TN · IN</span>
             </div>
-            <p>Luxury fashion, celebrity &amp; wedding photography crafted with cinematic vision and authentic emotion.</p>
+            <p className="hero-card-desc">Luxury fashion, celebrity &amp; wedding photography crafted with cinematic vision and authentic emotion.</p>
             <div className="ctas">
-              <a className="btn light" href="#portfolio">View portfolio <span className="arr" aria-hidden="true">→</span></a>
-              <a className="btn gold" href="#contact">Book a shoot <span className="arr" aria-hidden="true">→</span></a>
+              <a className="btn light hero-portfolio-cta" href="#portfolio">View portfolio <span className="arr" aria-hidden="true">→</span></a>
+              <a className="btn gold hero-desktop-book-btn" href="#contact">Book a shoot <span className="arr" aria-hidden="true">→</span></a>
             </div>
           </div>
         </div>
