@@ -50,6 +50,22 @@ export default function Showreel() {
     }
   };
 
+  // Play video whenever active reel changes
+  useEffect(() => {
+    if (activeReelIndex === null) return;
+    setIsPlaying(true);
+    const t = setTimeout(() => {
+      const v = activeVideoRef.current;
+      if (v) {
+        v.currentTime = 0;
+        v.play().catch(() => {
+          setIsPlaying(false);
+        });
+      }
+    }, 60);
+    return () => clearTimeout(t);
+  }, [activeReelIndex]);
+
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -186,10 +202,26 @@ export default function Showreel() {
             </div>
 
             <div className="reel-modal-nav">
-              <button className="reel-nav-btn" aria-label="Previous reel" onClick={prevReel} type="button">
+              <button
+                className="reel-nav-btn"
+                aria-label="Previous reel"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  prevReel();
+                }}
+                type="button"
+              >
                 ‹
               </button>
-              <button className="reel-nav-btn" aria-label="Next reel" onClick={nextReel} type="button">
+              <button
+                className="reel-nav-btn"
+                aria-label="Next reel"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  nextReel();
+                }}
+                type="button"
+              >
                 ›
               </button>
             </div>

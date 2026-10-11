@@ -2058,27 +2058,36 @@ body.ready .fadeup {
   justify-content: space-between;
   padding: 0 0.8rem;
   pointer-events: none;
-  z-index: 4;
+  z-index: 30;
 }
 .reel-nav-btn {
   pointer-events: auto;
-  width: 3rem;
-  height: 3rem;
+  position: relative;
+  z-index: 31;
+  width: 3.2rem;
+  height: 3.2rem;
   border-radius: 50%;
-  border: 1px solid rgba(255,255,255,0.3);
-  background: rgba(0,0,0,0.55);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: rgba(18, 15, 24, 0.75);
   color: #fff;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   display: grid;
   place-items: center;
   cursor: pointer;
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  transition: 0.3s var(--ease);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);
+  transition: 0.25s var(--ease);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 .reel-nav-btn:hover {
   background: #fff;
   color: #000;
+  transform: scale(1.1);
+}
+.reel-nav-btn:active {
+  transform: scale(0.95);
 }
 .reel-modal-close {
   position: absolute;
