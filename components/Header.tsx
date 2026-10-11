@@ -8,7 +8,6 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const [solid, setSolid] = useState(false);
   const [active, setActive] = useState('home');
-  const [mobile, setMobile] = useState(false);
   const [progress, setProgress] = useState(0);
   const burger = useRef<HTMLButtonElement>(null);
 
@@ -21,11 +20,6 @@ export default function Header() {
     onS();
     window.addEventListener('scroll', onS, { passive: true });
 
-    const mq = window.matchMedia('(max-width: 1020px)');
-    const onMq = () => setMobile(mq.matches);
-    onMq();
-    mq.addEventListener('change', onMq);
-
     const so = new IntersectionObserver(
       (es) => es.forEach((e) => e.isIntersecting && setActive(e.target.id)),
       { rootMargin: '-45% 0px -50% 0px' }
@@ -37,7 +31,6 @@ export default function Header() {
 
     return () => {
       window.removeEventListener('scroll', onS);
-      mq.removeEventListener('change', onMq);
       so.disconnect();
     };
   }, []);
@@ -59,8 +52,8 @@ export default function Header() {
   return (
     <>
       <div className="scroll-progress-bar" style={{ width: `${progress}%` }} aria-hidden="true" />
-      <header id="top" className={`hdr${solid || open ? ' solid' : ''}`}>
-        <a className="logo" href="#home" aria-label="Leo Picturez, home">
+      <header id="top" className={`hdr${solid ? ' solid' : ''}${open ? ' menu-open' : ''}`}>
+        <a className="logo" href="#home" aria-label="Leo Picturez, home" onClick={close}>
           <div className="logo-emblem">
             <Image
               src="/logo.png"
@@ -76,7 +69,9 @@ export default function Header() {
             <small>PHOTOGRAPHY &amp; CREATIVE STUDIO</small>
           </div>
         </a>
-        <div className={`navwrap${open ? ' open' : ''}`} id="menu" inert={mobile && !open ? true : undefined}>
+
+        {/* Desktop Navigation */}
+        <div className="navwrap desktop-nav">
           <nav className="nav" aria-label="Main">
             <ul>
               {nav.map(({ id, label }) => (
@@ -85,7 +80,6 @@ export default function Header() {
                     href={`#${id}`}
                     className={active === id ? 'on' : undefined}
                     aria-current={active === id ? 'true' : undefined}
-                    onClick={close}
                   >
                     {label}
                   </a>
@@ -93,10 +87,11 @@ export default function Header() {
               ))}
             </ul>
           </nav>
-          <a className="btn" href="#contact" onClick={close}>
+          <a className="btn" href="#contact">
             Book a shoot <span className="arr" aria-hidden="true">→</span>
           </a>
         </div>
+
         <div className="hdr-actions">
           <a className="hdr-quick-book btn gold" href="#contact" onClick={close}>
             <span>Book</span>
@@ -104,10 +99,11 @@ export default function Header() {
           </a>
           <button
             ref={burger}
+            type="button"
             className="burger"
             aria-label={open ? 'Close menu' : 'Open menu'}
             aria-expanded={open}
-            aria-controls="menu"
+            aria-controls="mobile-drawer"
             onClick={() => setOpen((o) => !o)}
           >
             <i />
@@ -116,6 +112,34 @@ export default function Header() {
           </button>
         </div>
       </header>
+
+      {/* Standalone Mobile Navigation Drawer (Hardware-accelerated 60fps, No WebKit Flashing) */}
+      <div
+        id="mobile-drawer"
+        className={`mobile-drawer${open ? ' open' : ''}`}
+        aria-hidden={!open}
+        inert={!open ? true : undefined}
+      >
+        <nav className="mobile-nav" aria-label="Mobile Navigation">
+          <ul>
+            {nav.map(({ id, label }) => (
+              <li key={id}>
+                <a
+                  href={`#${id}`}
+                  className={active === id ? 'on' : undefined}
+                  aria-current={active === id ? 'true' : undefined}
+                  onClick={close}
+                >
+                  {label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <a className="btn mobile-book-btn" href="#contact" onClick={close}>
+          Book a shoot <span className="arr" aria-hidden="true">→</span>
+        </a>
+      </div>
     </>
   );
 }
