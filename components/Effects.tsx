@@ -96,6 +96,38 @@ export default function Effects() {
       cleanups.push(() => { removeEventListener('mousemove', move); cancelAnimationFrame(raf); c.remove(); });
     }
 
+    // Ensure no stale service workers or cache lock older code in browser
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then((regs) => {
+        regs.forEach((reg) => reg.unregister());
+      });
+    }
+
+    // Warm-up cache for critical hero, founder, and lookbook images
+    const warmCache = () => {
+      const priorityImages = [
+        '/images/optimized/wedding-01-temple-pigeon-romance.jpg',
+        '/images/optimized/founder-leo.jpg',
+        '/images/optimized/television-01-sound-party-host-stage.jpg',
+        '/images/optimized/television-02-finger-hearts-camaraderie.jpg',
+        '/images/optimized/wedding-06-reception-twilight-romance.jpg',
+        '/images/optimized/bridal-01-silk-saree-gold-temple.jpg',
+        '/images/optimized/celebrity-01-warm-amber-portrait.jpg',
+        '/images/optimized/fashion-01-chartreuse-fan-collar.jpg',
+      ];
+
+      priorityImages.forEach((src) => {
+        const img = new window.Image();
+        img.src = src;
+      });
+    };
+
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(warmCache, { timeout: 400 });
+    } else {
+      setTimeout(warmCache, 250);
+    }
+
     return () => cleanups.forEach((f) => f());
   }, []);
 

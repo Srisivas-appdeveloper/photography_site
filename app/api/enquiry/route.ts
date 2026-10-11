@@ -54,7 +54,7 @@ export async function POST(req: Request) {
     headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
       from: process.env.ENQUIRY_FROM_EMAIL || 'Leo Picturez <onboarding@resend.dev>',
-      to: [process.env.ENQUIRY_TO_EMAIL || 'leopicturez@gmail.com'],
+      to: [process.env.ENQUIRY_TO_EMAIL || 'Info@leopicturez.com'],
       reply_to: e.email,
       subject: `New ${e.shoot_type} enquiry from ${e.name}`,
       html,

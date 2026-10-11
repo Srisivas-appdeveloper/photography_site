@@ -68,7 +68,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${serif.variable} ${sans.variable}`}>
       <head>
-        <link rel="preload" as="image" href="/images/optimized/bridal-pink-gold-palm-leaves.jpg" fetchPriority="high" />
+        <link rel="preload" as="image" href="/images/optimized/wedding-01-temple-pigeon-romance.jpg" fetchPriority="high" />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </head>
       <body>{children}</body>

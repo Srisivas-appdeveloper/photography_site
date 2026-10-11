@@ -6,7 +6,6 @@ import Intro from '@/components/Intro';
 import About from '@/components/About';
 import Stats from '@/components/Stats';
 import Portfolio from '@/components/Portfolio';
-import Categories from '@/components/Categories';
 import Services from '@/components/Services';
 import Experience from '@/components/Experience';
 import Showreel from '@/components/Showreel';
@@ -28,7 +27,6 @@ export default function Home() {
         <About />
         <Stats />
         <Portfolio />
-        <Categories />
         <Services />
         <Experience />
         <Showreel />

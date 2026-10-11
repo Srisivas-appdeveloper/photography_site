@@ -2,32 +2,43 @@
 
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { blurFor } from '@/lib/blur';
 
 const heroSlides = [
   {
-    src: '/images/optimized/lehenga-champagne-sequin-doorway.jpg',
-    alt: 'Bride in handcrafted champagne sequin lehenga with heirloom jewelry',
-    tag: 'Bridal & Weddings',
-    objectPosition: 'center 20%',
+    src: '/images/optimized/wedding-01-temple-pigeon-romance.jpg',
+    alt: 'South Indian wedding couple in traditional silk attire smiling before temple gopuram with flying doves',
+    tag: 'Sacred Weddings',
+    objectPosition: 'center 62%',
   },
   {
-    src: '/images/optimized/celebrity-curly-hair-portrait.jpg',
+    src: '/images/optimized/wedding-06-reception-twilight-romance.jpg',
+    alt: 'Royal reception couple holding wedding rings in midnight romance gaze',
+    tag: 'Royal Weddings',
+    objectPosition: 'center 38%',
+  },
+  {
+    src: '/images/optimized/bridal-01-silk-saree-gold-temple.jpg',
+    alt: 'South Indian bride in handcrafted silk saree with heirloom temple jewelry',
+    tag: 'Bridal Grandeur',
+    objectPosition: 'center 25%',
+  },
+  {
+    src: '/images/optimized/celebrity-01-warm-amber-portrait.jpg',
     alt: 'Celebrity portrait in warm cinematic ambient light',
     tag: 'Celebrities & Stills',
-    objectPosition: 'center 22%',
+    objectPosition: 'center 28%',
   },
   {
-    src: '/images/optimized/western-chartreuse-sculptural-gown.jpg',
+    src: '/images/optimized/fashion-01-chartreuse-fan-collar.jpg',
     alt: 'High fashion editorial in sculptural chartreuse gown',
     tag: 'Fashion & Western',
-    objectPosition: 'center 18%',
+    objectPosition: 'center 25%',
   },
   {
-    src: '/images/optimized/television-sound-party-black-dress.jpg',
-    alt: 'Television celebrity portrait on studio set',
+    src: '/images/optimized/television-01-sound-party-host-stage.jpg',
+    alt: 'Television host on live Vijay TV Sound Party studio set',
     tag: 'Television & Media',
-    objectPosition: 'center 18%',
+    objectPosition: 'center 28%',
   },
 ];
 
@@ -46,25 +57,40 @@ export default function Hero() {
     <section className="hero" id="home" aria-label="Introduction">
       <div className="hero-frame">
         {/* Background Images with smooth crossfade */}
-        <div className="hero-bg">
+        <div className="hero-bg" style={{ position: 'absolute', inset: 0 }}>
           {heroSlides.map((slide, idx) => (
             <div
               key={slide.src}
               className={`hero-slide ${idx === current ? 'active' : ''}`}
               aria-hidden={idx !== current}
+              style={{ position: 'absolute', inset: 0 }}
             >
-              <Image
-                src={slide.src}
-                alt={slide.alt}
-                fill
-                priority={idx === 0}
-                loading={idx === 0 ? 'eager' : 'lazy'}
-                unoptimized
-                sizes="100vw"
-                placeholder="blur"
-                blurDataURL={blurFor(slide.src, 'blush')}
-                style={{ objectFit: 'cover', objectPosition: slide.objectPosition }}
-              />
+              {/* Soft ambient atmospheric fill matching the photo tones */}
+              <div className="hero-slide-backdrop" aria-hidden="true" style={{ position: 'absolute', inset: '-10%' }}>
+                <Image
+                  src={slide.src}
+                  alt=""
+                  fill
+                  priority={idx === 0}
+                  unoptimized
+                  sizes="100vw"
+                  style={{ objectFit: 'cover' }}
+                />
+              </div>
+
+              {/* Natural Camera Photo: NEVER stretched, 100% natural resolution & sharpness */}
+              <div className="hero-slide-photo-wrap" style={{ position: 'absolute', inset: 0 }}>
+                <Image
+                  src={slide.src}
+                  alt={slide.alt}
+                  fill
+                  priority={idx === 0}
+                  loading={idx === 0 ? 'eager' : 'lazy'}
+                  unoptimized
+                  sizes="(max-width: 768px) 100vw, 1200px"
+                  style={{ objectFit: 'contain', objectPosition: 'center center' }}
+                />
+              </div>
             </div>
           ))}
         </div>
