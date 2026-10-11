@@ -77,7 +77,6 @@ export default function Portfolio() {
   const [turnState, setTurnState] = useState<'turn-next' | 'turn-prev' | null>(null);
   const [idx, setIdx] = useState<number | null>(null);
   const [loaded, setLoaded] = useState(false);
-  const [isZoomed, setIsZoomed] = useState(false);
   const dlg = useRef<HTMLDialogElement>(null);
   const lastTile = useRef<HTMLButtonElement | null>(null);
   const touchX = useRef<number | null>(null);
@@ -184,14 +183,12 @@ export default function Portfolio() {
   };
 
   const go = useCallback((d: number) => {
-    setIsZoomed(false);
     setLoaded(false);
     setIdx((i) => (i === null ? i : (i + d + visible.length) % visible.length));
   }, [visible.length]);
 
   const open = (i: number, el?: HTMLButtonElement | null) => {
     if (el) lastTile.current = el;
-    setIsZoomed(false);
     setLoaded(false);
     setIdx(i);
     dlg.current?.showModal();
@@ -363,7 +360,6 @@ export default function Portfolio() {
                 <span className="cap glass-dark">
                   <span>
                     <small>{p.category.toUpperCase()}</small>
-                    <h3>{p.title}</h3>
                   </span>
                   <span className="ring" aria-hidden="true">↗</span>
                 </span>
@@ -430,7 +426,7 @@ export default function Portfolio() {
 
                   <div className="page-footer">
                     <span className="folio-tag">PLATE No. {String(bookSpread * 2 + 1).padStart(2, '0')}</span>
-                    <h4>{currentSpread[0].title}</h4>
+                    <h4>{currentSpread[0].category.toUpperCase()}</h4>
                     <span className="page-num">{bookSpread * 2 + 1}</span>
                   </div>
                 </div>
@@ -463,7 +459,7 @@ export default function Portfolio() {
 
                   <div className="page-footer">
                     <span className="folio-tag">PLATE No. {String(bookSpread * 2 + 2).padStart(2, '0')}</span>
-                    <h4>{currentSpread[1].title}</h4>
+                    <h4>{currentSpread[1].category.toUpperCase()}</h4>
                     <span className="page-num">{bookSpread * 2 + 2}</span>
                   </div>
                 </div>
@@ -610,12 +606,7 @@ export default function Portfolio() {
       >
         {current && (
           <>
-            <div
-              className={`lb-stage ${isZoomed ? 'zoomed' : ''}`}
-              onClick={() => setIsZoomed((prev) => !prev)}
-              style={{ cursor: isZoomed ? 'zoom-out' : 'zoom-in' }}
-              title={isZoomed ? 'Click to zoom out' : 'Click to inspect 4K detail'}
-            >
+            <div className="lb-stage">
               <Image
                 key={current.src}
                 src={current.src}
@@ -629,8 +620,6 @@ export default function Portfolio() {
             </div>
             <div className="lb-cap glass-dark" aria-live="polite">
               <small>{current.category.toUpperCase()}</small>
-              <b>{current.title}</b>
-              <span className="lb-res-tag">4K ULTRA-HD</span>
             </div>
             <p className="lb-cnt">
               {(idx ?? 0) + 1} / {visible.length}
@@ -638,18 +627,9 @@ export default function Portfolio() {
           </>
         )}
         <button
-          className="lb-btn lb-z glass-dark"
-          aria-label={isZoomed ? 'Zoom out' : 'Zoom in to 4K detail'}
-          onClick={() => setIsZoomed((prev) => !prev)}
-          title={isZoomed ? 'Zoom out' : 'Inspect 4K detail'}
-        >
-          {isZoomed ? '−' : '+'}
-        </button>
-        <button
           className="lb-btn lb-x glass-dark"
           aria-label="Close gallery"
           onClick={() => {
-            setIsZoomed(false);
             dlg.current?.close();
           }}
           autoFocus

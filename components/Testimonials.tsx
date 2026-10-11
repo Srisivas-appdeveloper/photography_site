@@ -38,7 +38,6 @@ export default function Testimonials() {
             {testimonials.map((t, k) => (
               <figure key={k} aria-hidden={k !== i}>
                 <blockquote>“{t.quote}”</blockquote>
-                <figcaption>{t.by}</figcaption>
               </figure>
             ))}
           </div>
